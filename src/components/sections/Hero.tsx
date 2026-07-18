@@ -3,6 +3,7 @@
 import React, { useRef, useEffect } from 'react'
 import * as THREE from 'three'
 import { motion } from 'framer-motion'
+import { useRouter } from 'next/navigation'
 import { AnimatedText } from '../ui/AnimatedText'
 import { MagneticButton } from '../ui/MagneticButton'
 import { ArrowDown } from 'lucide-react'
@@ -124,6 +125,8 @@ function AICore() {
 }
 
 export function Hero() {
+  const router = useRouter()
+
   return (
     <section className="relative min-h-[100svh] flex flex-col items-center overflow-hidden pt-24 pb-20">
       <AICore />
@@ -172,10 +175,15 @@ export function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1, duration: 0.5 }}
         >
-          <MagneticButton className="bg-accent text-white hover:bg-accent/90 px-8 py-4">
+          <MagneticButton onClick={() => router.push('/work')} className="bg-accent text-white hover:bg-accent/90 px-8 py-4">
             Explore My Work
           </MagneticButton>
-          <MagneticButton className="bg-white/5 border border-white/10 text-white hover:bg-white/10 px-8 py-4">
+          <MagneticButton onClick={() => {
+            const link = document.createElement('a');
+            link.href = '/cv.pdf';
+            link.download = 'Dipanjan_Murmu_CV.pdf';
+            link.click();
+          }} className="bg-white/5 border border-white/10 text-white hover:bg-white/10 px-8 py-4">
             Download CV
           </MagneticButton>
         </motion.div>
