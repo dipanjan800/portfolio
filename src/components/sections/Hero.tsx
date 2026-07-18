@@ -141,7 +141,7 @@ export function Hero() {
         <AnimatedText 
           text="DIPANJAN MURMU" 
           el="h1" 
-          className="font-heading text-6xl md:text-8xl lg:text-9xl font-extrabold tracking-tighter mb-4 text-white" 
+          className="font-heading text-4xl sm:text-5xl md:text-7xl lg:text-9xl font-extrabold tracking-tighter mb-4 text-white whitespace-nowrap" 
         />
         
         <div className="h-12 md:h-16 mb-6">
