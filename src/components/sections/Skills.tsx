@@ -1,12 +1,12 @@
 'use client'
 
 import React from 'react'
-import { motion } from 'framer-motion'
+import { motion, Variants } from 'framer-motion'
 import { AnimatedText } from '../ui/AnimatedText'
 import { skills } from '@/data/portfolio'
 
 export function Skills() {
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -16,7 +16,7 @@ export function Skills() {
     }
   }
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { opacity: 0, scale: 0.8 },
     visible: { opacity: 1, scale: 1, transition: { type: 'spring', stiffness: 100 } }
   }

@@ -7,7 +7,7 @@ import { cn } from './MagneticButton'
 interface AnimatedTextProps {
   text: string
   className?: string
-  el?: keyof JSX.IntrinsicElements
+  el?: React.ElementType
   once?: boolean
 }
 
@@ -35,7 +35,7 @@ export const AnimatedText = ({
   const isInView = useInView(ref, { amount: 0.5, once })
 
   return (
-    <Wrapper className={cn(className)} ref={ref}>
+    <Wrapper className={cn(className)} ref={ref as any}>
       <span className="sr-only">{text}</span>
       <motion.span
         initial="hidden"
