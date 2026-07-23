@@ -15,101 +15,108 @@ function AICore() {
   useEffect(() => {
     if (!mountRef.current) return
 
-    const scene = new THREE.Scene()
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true })
-    
-    renderer.setSize(window.innerWidth, window.innerHeight)
-    mountRef.current.appendChild(renderer.domElement)
-
-    // Holographic Core
-    const geometry = new THREE.IcosahedronGeometry(2, 2)
-    const material = new THREE.MeshBasicMaterial({ 
-      color: 0x3b82f6, 
-      wireframe: true,
-      transparent: true,
-      opacity: 0.5
-    })
-    const sphere = new THREE.Mesh(geometry, material)
-    scene.add(sphere)
-
-    // Particles
-    const particlesGeometry = new THREE.BufferGeometry()
-    const particlesCount = 700
-    const posArray = new Float32Array(particlesCount * 3)
-
-    for(let i = 0; i < particlesCount * 3; i++) {
-      posArray[i] = (Math.random() - 0.5) * 15
-    }
-
-    particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3))
-    const particlesMaterial = new THREE.PointsMaterial({
-      size: 0.02,
-      color: 0xffffff,
-      transparent: true,
-      opacity: 0.8
-    })
-
-    const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial)
-    scene.add(particlesMesh)
-
-    camera.position.z = 5
-
-    let mouseX = 0
-    let mouseY = 0
-    let targetX = 0
-    let targetY = 0
-    const windowHalfX = window.innerWidth / 2
-    const windowHalfY = window.innerHeight / 2
-
-    const onDocumentMouseMove = (event: MouseEvent) => {
-      mouseX = (event.clientX - windowHalfX)
-      mouseY = (event.clientY - windowHalfY)
-    }
-
-    document.addEventListener('mousemove', onDocumentMouseMove)
-
-    const clock = new THREE.Clock()
-
-    const animate = () => {
-      requestAnimationFrame(animate)
-      const elapsedTime = clock.getElapsedTime()
-
-      targetX = mouseX * 0.001
-      targetY = mouseY * 0.001
-
-      sphere.rotation.y += 0.005
-      sphere.rotation.x += 0.002
+    try {
+      const scene = new THREE.Scene()
+      const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
+      const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true })
       
-      sphere.rotation.y += 0.05 * (targetX - sphere.rotation.y)
-      sphere.rotation.x += 0.05 * (targetY - sphere.rotation.x)
-
-      particlesMesh.rotation.y = -elapsedTime * 0.05
-
-      renderer.render(scene, camera)
-    }
-
-    animate()
-
-    const handleResize = () => {
-      camera.aspect = window.innerWidth / window.innerHeight
-      camera.updateProjectionMatrix()
       renderer.setSize(window.innerWidth, window.innerHeight)
-    }
-    
-    window.addEventListener('resize', handleResize)
+      mountRef.current.appendChild(renderer.domElement)
 
-    return () => {
-      window.removeEventListener('resize', handleResize)
-      document.removeEventListener('mousemove', onDocumentMouseMove)
-      if (mountRef.current) {
-        mountRef.current.removeChild(renderer.domElement)
+      // Holographic Core
+      const geometry = new THREE.IcosahedronGeometry(2, 2)
+      const material = new THREE.MeshBasicMaterial({ 
+        color: 0x3b82f6, 
+        wireframe: true,
+        transparent: true,
+        opacity: 0.5
+      })
+      const sphere = new THREE.Mesh(geometry, material)
+      scene.add(sphere)
+
+      // Particles
+      const particlesGeometry = new THREE.BufferGeometry()
+      const particlesCount = 700
+      const posArray = new Float32Array(particlesCount * 3)
+
+      for(let i = 0; i < particlesCount * 3; i++) {
+        posArray[i] = (Math.random() - 0.5) * 15
       }
-      geometry.dispose()
-      material.dispose()
-      particlesGeometry.dispose()
-      particlesMaterial.dispose()
-      renderer.dispose()
+
+      particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3))
+      const particlesMaterial = new THREE.PointsMaterial({
+        size: 0.02,
+        color: 0xffffff,
+        transparent: true,
+        opacity: 0.8
+      })
+
+      const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial)
+      scene.add(particlesMesh)
+
+      camera.position.z = 5
+
+      let mouseX = 0
+      let mouseY = 0
+      let targetX = 0
+      let targetY = 0
+      const windowHalfX = window.innerWidth / 2
+      const windowHalfY = window.innerHeight / 2
+
+      const onDocumentMouseMove = (event: MouseEvent) => {
+        mouseX = (event.clientX - windowHalfX)
+        mouseY = (event.clientY - windowHalfY)
+      }
+
+      document.addEventListener('mousemove', onDocumentMouseMove)
+
+      const clock = new THREE.Clock()
+
+      const animate = () => {
+        requestAnimationFrame(animate)
+        const elapsedTime = clock.getElapsedTime()
+
+        targetX = mouseX * 0.001
+        targetY = mouseY * 0.001
+
+        sphere.rotation.y += 0.005
+        sphere.rotation.x += 0.002
+        
+        sphere.rotation.y += 0.05 * (targetX - sphere.rotation.y)
+        sphere.rotation.x += 0.05 * (targetY - sphere.rotation.x)
+
+        particlesMesh.rotation.y = -elapsedTime * 0.05
+
+        renderer.render(scene, camera)
+      }
+
+      animate()
+
+      const handleResize = () => {
+        camera.aspect = window.innerWidth / window.innerHeight
+        camera.updateProjectionMatrix()
+        renderer.setSize(window.innerWidth, window.innerHeight)
+      }
+      
+      window.addEventListener('resize', handleResize)
+
+      return () => {
+        window.removeEventListener('resize', handleResize)
+        document.removeEventListener('mousemove', onDocumentMouseMove)
+        if (mountRef.current && renderer.domElement) {
+          try {
+            mountRef.current.removeChild(renderer.domElement)
+          } catch(e) {}
+        }
+        geometry.dispose()
+        material.dispose()
+        particlesGeometry.dispose()
+        particlesMaterial.dispose()
+        renderer.dispose()
+      }
+    } catch (error) {
+      console.warn("WebGL not supported or ThreeJS initialization failed:", error)
+      return () => {}
     }
   }, [])
 
